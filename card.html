@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D VIP 會員卡 SVG 動畫</title>
+    <style>
+        /* 頁面基本設置，將卡片置中 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #121212;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        /* 3D 視角容器 */
+        .card-container {
+            perspective: 1200px; /* 給予 3D 深度感 */
+            width: 420px;
+            height: 265px;
+        }
+
+        /* 卡片本體 */
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            /* 設置翻轉動畫的過渡時間與貝茲曲線，讓翻轉看起來更有彈性 */
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        /* 當滑鼠懸停在容器上時，卡片翻轉 180 度 */
+        .card-container:hover .card {
+            transform: rotateY(180deg);
+        }
+
+        /* 卡片的正反兩面共用樣式 */
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            /* 隱藏背面，這樣在翻轉時才不會透視 */
+            backface-visibility: hidden;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+        }
+
+        /* 卡片正面樣式 */
+        .card-front {
+            background: linear-gradient(135deg, #1c1c1c, #383838);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 卡片背面樣式 */
+        .card-back {
+            background: linear-gradient(135deg, #2a2a2a, #111111);
+            transform: rotateY(180deg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* 紅色框線 SVG 動畫 */
+        .highlight-box {
+            /* 矩形周長約為 (160+40)*2 = 400，設置 450 確保能完全隱藏 */
+            stroke-dasharray: 450;
+            stroke-dashoffset: 450; 
+            /* 動畫過渡效果 */
+            transition: stroke-dashoffset 0.6s ease-out;
+        }
+
+        /* 當卡片翻轉時（hover），觸發紅框繪製動畫 */
+        .card-container:hover .highlight-box {
+            stroke-dashoffset: 0;
+            /* 延遲 0.7 秒，等待卡片幾乎翻轉完畢後才開始畫線 */
+            transition-delay: 0.7s; 
+        }
+
+        /* 卡片正面反光特效 */
+        .reflection {
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            transition: left 0.8s ease-in-out;
+            pointer-events: none;
+        }
+
+        /* 滑鼠移入時，反光掃過卡片 */
+        .card-container:hover .card-front .reflection {
+            left: 200%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <div class="card">
+            
+            <!-- 卡片正面 -->
+            <div class="card-face card-front">
+                <!-- 反光層 -->
+                <div class="reflection"></div>
+                <!-- 正面 SVG 設計 -->
+                <svg width="100%" height="100%" viewBox="0 0 420 265" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#E5C07B" />
+                            <stop offset="50%" stop-color="#F3E5AB" />
+                            <stop offset="100%" stop-color="#D4AF37" />
+                        </linearGradient>
+                        <!-- 六角形背景紋理 -->
+                        <pattern id="hexagons" width="30" height="51.96" patternUnits="userSpaceOnUse" patternTransform="scale(0.5)">
+                            <path d="M15,0 L30,8.66 L30,25.98 L15,34.64 L0,25.98 L0,8.66 Z" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    
+                    <!-- 鋪滿背景紋理 -->
+                    <rect width="100%" height="100%" fill="url(#hexagons)"/>
+
+                    <!-- 晶片圖示 -->
+                    <g transform="translate(40, 100)">
+                        <rect width="55" height="40" rx="6" fill="url(#goldGradient)"/>
+                        <!-- 晶片上的線條 -->
+                        <path d="M 0,15 L 18,15 M 0,25 L 18,25 M 55,15 L 37,15 M 55,25 L 37,25 M 27.5,0 L 27.5,10 M 27.5,40 L 27.5,30 M 18,10 L 37,10 M 18,30 L 37,30 L 37,10 L 18,10 Z" stroke="rgba(0,0,0,0.5)" stroke-width="1.5" fill="none"/>
+                    </g>
+
+                    <!-- 無線感應符號 -->
+                    <g transform="translate(350, 110)" stroke="url(#goldGradient)" stroke-width="3" fill="none" stroke-linecap="round">
+                        <path d="M 5,5 A 15,15 0 0,1 5,25" opacity="0.4"/>
+                        <path d="M 13,-2 A 25,25 0 0,1 13,32" opacity="0.7"/>
+                        <path d="M 21,-9 A 35,35 0 0,1 21,39" />
+                    </g>
+
+                    <!-- 卡面文字 -->
+                    <text x="40" y="60" fill="url(#goldGradient)" font-size="22" font-weight="bold" letter-spacing="3">PREMIUM VIP</text>
+                    <text x="40" y="210" fill="#e0e0e0" font-size="20" font-family="monospace" letter-spacing="4">**** **** **** 8888</text>
+                    <text x="40" y="240" fill="#aaaaaa" font-size="12" letter-spacing="2" font-family="sans-serif">MEMBER NAME</text>
+                </svg>
+            </div>
+
+            <!-- 卡片背面 -->
+            <div class="card-face card-back">
+                <!-- 背面 SVG 設計 -->
+                <svg width="100%" height="100%" viewBox="0 0 420 265" xmlns="http://www.w3.org/2000/svg">
+                    
+                    <!-- 黑色磁條 -->
+                    <rect x="0" y="30" width="420" height="50" fill="#050505"/>
+
+                    <!-- 簽名白條 -->
+                    <rect x="20" y="110" width="280" height="35" fill="#eeeeee"/>
+                    <!-- 簽名區斜線防偽紋路 -->
+                    <path d="M 20,115 L 300,115 M 20,127 L 300,127 M 20,139 L 300,139" stroke="#cccccc" stroke-width="1" stroke-dasharray="3,3"/>
+                    <!-- 模擬簽名字跡 -->
+                    <text x="35" y="135" fill="#333" font-size="18" font-style="italic" font-family="cursive">Signed User</text>
+
+                    <!-- 安全碼 (CVC) 區域 -->
+                    <rect x="310" y="110" width="50" height="35" fill="#ffffff"/>
+                    <text x="335" y="133" fill="#000" font-size="14" font-family="monospace" text-anchor="middle">123</text>
+
+                    <!-- 六位數會員編號及紅色動畫外框 -->
+                    <g transform="translate(140, 185)">
+                        <!-- 會員編號 text -->
+                        <text x="0" y="28" fill="#ffffff" font-size="22" font-family="monospace" letter-spacing="4">NO. 852741</text>
+                        
+                        <!-- 動畫畫出的紅框 -->
+                        <!-- 設定長方形的大小恰好框住上述文字 -->
+                        <rect class="highlight-box" x="-12" y="2" width="170" height="36" fill="none" stroke="#ff3b30" stroke-width="3" rx="6" />
+                    </g>
+
+                    <!-- 底部說明小字 -->
+                    <text x="210" y="250" fill="#666666" font-size="9" text-anchor="middle" font-family="sans-serif">
+                        This card is non-transferable and remains the property of the issuing company.
+                    </text>
+                </svg>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
