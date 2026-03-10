@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURORA | 複合式極致餐酒體驗</title>
+    <meta name="description" content="AURORA Bistro & Bar - 融合前衛料理與微醺美學的深夜棲所">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#080808',
+                        accent: '#C5A47E',
+                        surface: '#121212',
+                        border: 'rgba(255,255,255,0.1)'
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Global Grain Effect */
+        .grain::before {
+            content: "";
+            position: fixed;
+            top: -100%; left: -100%; width: 300%; height: 300%;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 9999;
+            animation: noise 8s steps(10) infinite;
+        }
+        @keyframes noise {
+            0%, 100% { transform: translate(0,0); }
+            10% { transform: translate(-5%,-10%); }
+            30% { transform: translate(-10%,5%); }
+            50% { transform: translate(5%,-5%); }
+            70% { transform: translate(15%,10%); }
+            90% { transform: translate(-10%,10%); }
+        }
+
+        /* Custom Cursor */
+        #cursor {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        /* 1px Border Beam Effect */
+        .beam-card {
+            position: relative;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+        .beam-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(197,164,126,0.3), transparent 30%);
+            animation: rotate 6s linear infinite;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .beam-card:hover::after { opacity: 1; }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .line-deco {
+            position: fixed;
+            top: 0; left: 10%; width: 1px; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.05), transparent);
+            z-index: -1;
+        }
+        .line-deco-2 { left: 90%; }
+
+        .reveal-text { clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+
+        body { cursor: none; background-color: #080808; color: white; overflow-x: hidden; }
+        a, button { cursor: none; }
+    </style>
+</head>
+<body class="grain">
+
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+
+    <!-- Background Decoration -->
+    <div class="line-deco"></div>
+    <div class="line-deco-2"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-6 py-8 flex justify-between items-center mix-blend-difference">
+        <div class="text-2xl font-serif tracking-widest font-bold">AURORA</div>
+        <div class="hidden md:flex space-x-12 text-sm tracking-widest uppercase font-light">
+            <a href="#about" class="hover:text-accent transition-colors">Concept</a>
+            <a href="#menu" class="hover:text-accent transition-colors">Menu</a>
+            <a href="#footer" class="hover:text-accent transition-colors">Contact</a>
+        </div>
+        <button class="magnetic-btn p-2">
+            <iconify-icon icon="solar:hamburger-menu-linear" width="32"></iconify-icon>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=2000" 
+                 alt="Hero" class="w-full h-full object-cover opacity-40 scale-110" id="hero-img">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-transparent to-transparent"></div>
+        </div>
+
+        <div class="relative z-10 text-center px-4">
+            <span class="block text-accent tracking-[0.3em] uppercase text-sm mb-4 opacity-0" id="hero-sub">Where Culinary Art Meets Nightlife Soul</span>
+            <h1 class="text-6xl md:text-9xl font-serif mb-8 leading-tight opacity-0" id="hero-title">
+                Taste the <br><i class="font-light italic">Ethereal</i>
+            </h1>
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center opacity-0" id="hero-cta">
+                <button class="magnetic-btn px-10 py-4 bg-accent text-dark font-semibold tracking-tighter hover:bg-white transition-all duration-500 rounded-sm">
+                    RESERVE EXPERIENCE
+                </button>
+                <button class="magnetic-btn px-10 py-4 border border-white/20 backdrop-blur-sm hover:bg-white/10 transition-all rounded-sm flex items-center gap-2">
+                    EXPLORE MENU <iconify-icon icon="solar:arrow-right-linear"></iconify-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-40">
+            <span class="text-[10px] tracking-[0.5em] uppercase vertical-rl">Scroll</span>
+            <div class="w-[1px] h-12 bg-gradient-to-b from-white to-transparent"></div>
+        </div>
+    </section>
+
+    <!-- Strategy Section (Values) -->
+    <section id="about" class="py-32 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="space-y-6 reveal-section">
+                <span class="text-accent font-serif italic">01.</span>
+                <h3 class="text-2xl font-serif">Gastronomic Fusion</h3>
+                <p class="text-gray-400 leading-relaxed font-light">
+                    跨越國界的創意料理，將在地食材轉化為盤中的當代藝術，挑戰您的味蕾極限。
+                </p>
+            </div>
+            <div class="space-y-6 reveal-section">
+                <span class="text-accent font-serif italic">02.</span>
+                <h3 class="text-2xl font-serif">Mixology Mastery</h3>
+                <p class="text-gray-400 leading-relaxed font-light">
+                    每一杯調酒都是一個故事。我們使用手工萃取的基底，調製出獨一無二的液體詩篇。
+                </p>
+            </div>
+            <div class="space-y-6 reveal-section">
+                <span class="text-accent font-serif italic">03.</span>
+                <h3 class="text-2xl font-serif">Cinematic Vibe</h3>
+                <p class="text-gray-400 leading-relaxed font-light">
+                    低調奢華的工業風設計與精心設計的光影，為您的夜晚打造最完美的電影感背景。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Highlight Section -->
+    <section id="menu" class="py-20 bg-surface/50">
+        <div class="px-6 max-w-7xl mx-auto">
+            <div class="flex justify-between items-end mb-16">
+                <div>
+                    <h2 class="text-4xl md:text-6xl font-serif">Signature Selection</h2>
+                    <p class="text-accent mt-4 tracking-widest uppercase text-xs">Curated by our Michelin-starred team</p>
+                </div>
+                <div class="hidden md:block text-right">
+                    <span class="text-6xl font-serif opacity-5">MENU</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Item 1 -->
+                <div class="beam-card group p-8 rounded-xl transition-all hover:-translate-y-2">
+                    <div class="relative h-64 mb-6 overflow-hidden rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&q=80&w=800" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Menu">
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-serif">Truffle Infused Wagyu</h4>
+                        <span class="text-accent">$1,280</span>
+                    </div>
+                    <p class="text-sm text-gray-500 font-light mb-6">Aged beef, black truffle reduction, smoked rosemary.</p>
+                    <button class="magnetic-btn w-full py-3 border border-accent/30 text-accent text-xs tracking-widest hover:bg-accent hover:text-dark transition-all">
+                        VIEW DETAIL
+                    </button>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="beam-card group p-8 rounded-xl transition-all hover:-translate-y-2">
+                    <div class="relative h-64 mb-6 overflow-hidden rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1510626176961-4b57d4fbad03?auto=format&fit=crop&q=80&w=800" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Menu">
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-serif">Midnight Orchid</h4>
+                        <span class="text-accent">$450</span>
+                    </div>
+                    <p class="text-sm text-gray-500 font-light mb-6">Gin base, violette liqueur, edible gold, lemon zest.</p>
+                    <button class="magnetic-btn w-full py-3 border border-accent/30 text-accent text-xs tracking-widest hover:bg-accent hover:text-dark transition-all">
+                        VIEW DETAIL
+                    </button>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="beam-card group p-8 rounded-xl transition-all hover:-translate-y-2">
+                    <div class="relative h-64 mb-6 overflow-hidden rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&q=80&w=800" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Menu">
+                    </div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-serif">Sea Urchin Risotto</h4>
+                        <span class="text-accent">$880</span>
+                    </div>
+                    <p class="text-sm text-gray-500 font-light mb-6">Fresh Hokkaido Uni, saffron, aged parmesan crisp.</p>
+                    <button class="magnetic-btn w-full py-3 border border-accent/30 text-accent text-xs tracking-widest hover:bg-accent hover:text-dark transition-all">
+                        VIEW DETAIL
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Partners -->
+    <div class="py-20 border-y border-white/5 opacity-50 grayscale hover:grayscale-0 transition-all">
+        <div class="flex flex-wrap justify-center items-center gap-12 px-6">
+            <iconify-icon icon="simple-icons:michelin" width="100"></iconify-icon>
+            <iconify-icon icon="simple-icons:moetchandon" width="120"></iconify-icon>
+            <iconify-icon icon="simple-icons:sanpellegrino" width="100"></iconify-icon>
+            <iconify-icon icon="simple-icons:fourseasons" width="120"></iconify-icon>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer" class="relative pt-32 pb-12 px-6 overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 relative z-10">
+            <div>
+                <h2 class="text-6xl md:text-8xl font-serif mb-12">Let's Toast<br>Tonight.</h2>
+                <div class="flex gap-8">
+                    <a href="#" class="magnetic-btn p-4 rounded-full border border-white/10 hover:border-accent group">
+                        <iconify-icon icon="simple-icons:instagram" class="group-hover:text-accent transition-colors"></iconify-icon>
+                    </a>
+                    <a href="#" class="magnetic-btn p-4 rounded-full border border-white/10 hover:border-accent group">
+                        <iconify-icon icon="simple-icons:facebook" class="group-hover:text-accent transition-colors"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col justify-end space-y-12">
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <h5 class="text-accent text-xs tracking-widest uppercase">Opening Hours</h5>
+                        <p class="text-sm font-light">Tue - Sun: 18:00 - 02:00<br>Monday Closed</p>
+                    </div>
+                    <div class="space-y-4">
+                        <h5 class="text-accent text-xs tracking-widest uppercase">Location</h5>
+                        <p class="text-sm font-light">101 Skyline Ave,<br>Xinyi District, Taipei</p>
+                    </div>
+                </div>
+                <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between gap-4 text-[10px] tracking-widest text-gray-600">
+                    <span>© 2024 AURORA BISTRO. ALL RIGHTS RESERVED.</span>
+                    <a href="#" class="hover:text-white transition-colors uppercase">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gigantic background text -->
+        <div class="absolute -bottom-10 left-0 text-[20vw] font-serif font-bold opacity-[0.02] select-none whitespace-nowrap pointer-events-none">
+            AURORA AURORA
+        </div>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Custom Cursor Logic
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1
+            });
+        });
+
+        document.querySelectorAll('a, button, .magnetic-btn').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(cursor, { scale: 4, duration: 0.3 });
+            });
+            el.addEventListener('mouseleave', () => {
+                gsap.to(cursor, { scale: 1, duration: 0.3 });
+            });
+        });
+
+        // Magnetic Pull Logic
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                gsap.to(btn, {
+                    x: x * 0.3,
+                    y: y * 0.3,
+                    duration: 0.4,
+                    ease: "power2.out"
+                });
+            });
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: "elastic.out(1, 0.3)" });
+            });
+        });
+
+        // Hero Animations
+        const tl = gsap.timeline();
+        tl.to("#hero-img", { scale: 1, duration: 2, ease: "power2.out" })
+          .to("#hero-sub", { opacity: 1, y: 0, duration: 1 }, "-=1")
+          .to("#hero-title", { opacity: 1, y: 0, duration: 1 }, "-=0.7")
+          .to("#hero-cta", { opacity: 1, y: 0, duration: 1 }, "-=0.7");
+
+        // Scrollytelling - Text Reveals
+        gsap.utils.toArray('.reveal-section').forEach(section => {
+            gsap.from(section, {
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 85%",
+                },
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+
+        // Parallax Effect on Hero Image
+        gsap.to("#hero-img", {
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            },
+            y: 200
+        });
+
+        // Card staggered reveal
+        gsap.from(".beam-card", {
+            scrollTrigger: {
+                trigger: "#menu",
+                start: "top 60%"
+            },
+            y: 100,
+            opacity: 0,
+            duration: 1.2,
+            stagger: 0.2,
+            ease: "expo.out"
+        });
+    </script>
+</body>
+</html>
